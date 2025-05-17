@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:school_management_application/UI/attendance.dart';
+import 'package:school_management_application/UI/class_schedule_screen.dart';
+import 'package:school_management_application/UI/exams_screen.dart';
+import 'package:school_management_application/UI/fees_screen.dart';
+import 'package:school_management_application/UI/leave_apply.dart';
+import 'package:school_management_application/UI/tasks_assignment.dart';
 
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
@@ -9,20 +15,49 @@ class HomepageScreen extends StatefulWidget {
 
 class _HomepageScreenState extends State<HomepageScreen> {
   List buttonList = [
-    {"name": "Attendance", "icon": "Calendar"},
-    {"name": "Daily Classes", "icon": "timetable"},
-    {"name": "H/W", "icon": "book-stack"},
-    {"name": "Exams", "icon": "exam-time"},
-    {"name": "Fees", "icon": "fee"},
-    {"name": "Leave Apply", "icon": "book-stack"},
+    {
+      "name": "Attendance",
+      "icon": "Calendar",
+      "screen": const AttendanceScreen()
+    },
+    {
+      "name": "Daily Classes",
+      "icon": "timetable",
+      "screen": const ClassesScheduleScreen()
+    },
+    {"name": "Tasks", "icon": "book-stack", "screen": const TaskScreen()},
+    {"name": "Exams", "icon": "exam-time", "screen": const ExamsScreen()},
+    {"name": "Fees", "icon": "fee", "screen": const FeesPaymentScreen()},
+    {
+      "name": "Leave Apply",
+      "icon": "book-stack",
+      "screen": const LeaveApplyScreen()
+    },
     {"name": "Transport", "icon": "vehicles"},
-    {"name": "Library", "icon": "book-stack"},
+    {"name": "Library", "icon": "books-stack-of-three"},
   ];
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        // appBar:
+
+        //  AppBar(
+        //   automaticallyImplyLeading: false,
+        //   leading: Image.asset(
+        //     "assets/icons/menu-bar.png",
+        //     height: 20,
+        //     width: 20,
+        //   ),
+        //   // actions: [
+        //   //   Image.asset(
+        //   //     "assets/icons/menu-bar.png",
+        //   //     height: 35,
+        //   //     width: 35,
+        //   //   )
+        //   // ],
+        // ),
         backgroundColor: Colors.white,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +68,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 20),
+                  padding: const EdgeInsets.only(left: 15),
                   child: Container(
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
@@ -81,12 +116,12 @@ class _HomepageScreenState extends State<HomepageScreen> {
               height: 20,
             ),
             GridView.builder(
-                padding: EdgeInsets.only(left: 15),
+                padding: EdgeInsets.only(left: 10, right: 8),
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // number of items in each row
-                  mainAxisSpacing: 8.0, // spacing between rows
-                  crossAxisSpacing: 8.0, // spacing between columns
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 3,
                 ),
                 itemCount: buttonList.length,
                 itemBuilder: (context, index) {
@@ -98,36 +133,77 @@ class _HomepageScreenState extends State<HomepageScreen> {
                           height: 100,
                           width: 110,
                           decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.deepPurple.shade50
+                                      .withOpacity(0.8),
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                  blurStyle: BlurStyle.inner),
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                  blurStyle: BlurStyle.normal)
+                            ],
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                                 width: 1,
-                                color: Color.fromARGB(255, 136, 200, 252)),
+                                color: Colors.deepPurple.withOpacity(0.5)),
 
                             color: Colors.white,
                             // color: const Color.fromARGB(255, 136, 200, 252),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 29,
-                                width: 29,
-                                child: Image.asset(
-                                    'assets/images/${buttonList[index]["icon"]}.png'),
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              Text(
-                                buttonList[index]["name"],
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color.fromARGB(
-                                        255, 114, 112, 112)),
-                              )
-                            ],
+                          child: InkWell(
+                            onTap: () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          buttonList[index]["screen"]))
+                            },
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 136, 200, 252),
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            bottomRight: Radius.circular(20))),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 29,
+                                      width: 29,
+                                      child: Image.asset(
+                                          'assets/images/${buttonList[index]["icon"]}.png'),
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    Text(
+                                      buttonList[index]["name"],
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color.fromARGB(
+                                              255, 114, 112, 112)),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

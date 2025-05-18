@@ -62,15 +62,15 @@ class _HomepageScreenState extends State<HomepageScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 15),
+                  padding: const EdgeInsets.only(left: 20),
                   child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 247, 221, 136),
                         borderRadius: BorderRadius.circular(100),
@@ -83,10 +83,10 @@ class _HomepageScreenState extends State<HomepageScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
@@ -112,98 +112,76 @@ class _HomepageScreenState extends State<HomepageScreen> {
                 )
               ],
             ),
-            SizedBox(
-              height: 20,
+            const SizedBox(
+              height: 30,
             ),
             GridView.builder(
-                padding: EdgeInsets.only(left: 10, right: 8),
+                padding: const EdgeInsets.only(left: 15, right: 15),
                 shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 3,
+                  crossAxisSpacing: 3,
+                  mainAxisSpacing: 0,
                 ),
                 itemCount: buttonList.length,
                 itemBuilder: (context, index) {
-                  return Stack(
+                  return Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Container(
-                          height: 100,
-                          width: 110,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.deepPurple.shade50
-                                      .withOpacity(0.8),
-                                  blurRadius: 5,
-                                  spreadRadius: 2,
-                                  blurStyle: BlurStyle.inner),
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 5,
-                                  spreadRadius: 2,
-                                  blurStyle: BlurStyle.normal)
-                            ],
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                width: 1,
-                                color: Colors.deepPurple.withOpacity(0.5)),
-
-                            color: Colors.white,
-                            // color: const Color.fromARGB(255, 136, 200, 252),
-                          ),
-                          child: InkWell(
-                            onTap: () => {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          buttonList[index]["screen"]))
-                            },
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  top: 0,
-                                  left: 0,
-                                  child: Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 136, 200, 252),
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20))),
+                      Container(
+                        height: 90,
+                        width: 90,
+                        decoration: decorationOfContainer(),
+                        child: InkWell(
+                          onTap: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        buttonList[index]["screen"]))
+                          },
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: 15,
+                                left: 20,
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(100),
                                   ),
                                 ),
-                                Column(
+                              ),
+                              Center(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
                                     SizedBox(
-                                      height: 29,
+                                      height: 28,
                                       width: 29,
                                       child: Image.asset(
                                           'assets/images/${buttonList[index]["icon"]}.png'),
                                     ),
                                     const SizedBox(
-                                      height: 6,
+                                      height: 8,
                                     ),
                                     Text(
                                       buttonList[index]["name"],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: const Color.fromARGB(
+                                          color: Color.fromARGB(
                                               255, 114, 112, 112)),
                                     )
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -226,32 +204,23 @@ class _HomepageScreenState extends State<HomepageScreen> {
                     ],
                   );
                 }),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 10),
+            const Padding(
+              padding: EdgeInsets.only(left: 20, right: 10),
               child: Text(
                 "Notice Board :",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                left: 20,
-              ),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: Container(
-                height: 130,
+                height: 120,
                 // width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      width: 1, color: Color.fromARGB(255, 136, 200, 252)),
-
-                  color: Colors.white,
-                  // color: const Color.fromARGB(255, 136, 200, 252),
-                ),
-                child: Row(
+                decoration: decorationOfContainer(),
+                child: const Row(
                   children: [
                     Icon(
                       Icons.image,
@@ -268,6 +237,29 @@ class _HomepageScreenState extends State<HomepageScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  BoxDecoration decorationOfContainer() {
+    return BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+            color: Colors.deepPurple.shade50.withOpacity(0.8),
+            blurRadius: 5,
+            spreadRadius: 2,
+            blurStyle: BlurStyle.inner),
+        BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: const Offset(0, 2),
+            blurRadius: 5,
+            spreadRadius: 2,
+            blurStyle: BlurStyle.normal)
+      ],
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(width: 1, color: Colors.deepPurple.withOpacity(0.5)),
+
+      color: Colors.white,
+      // color: const Color.fromARGB(255, 136, 200, 252),
     );
   }
 }

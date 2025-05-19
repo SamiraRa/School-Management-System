@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:school_management_application/UI/homepage_screen.dart';
 import 'package:school_management_application/UI/loginpage.dart';
 
 class SignupPage extends StatefulWidget {

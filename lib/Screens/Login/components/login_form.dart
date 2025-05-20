@@ -9,19 +9,19 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
+    TextEditingController studentIdController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     return Form(
       child: Column(
         children: [
           TextFormField(
-            controller: emailController,
+            controller: studentIdController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
             onSaved: (email) {},
             decoration: const InputDecoration(
-              hintText: "Your email",
+              hintText: "Student ID",
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.person),
@@ -47,8 +47,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomepageScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HomepageScreen()));
             },
             child: Text(
               "Login".toUpperCase(),

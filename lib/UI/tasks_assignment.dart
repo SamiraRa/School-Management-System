@@ -1,6 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:school_management_application/constants.dart';
+import 'package:school_management_application/local_storage/boxes.dart';
 import 'package:school_management_application/model/personal_task_model.dart';
+import 'package:school_management_application/model/to_do_model.dart';
 import 'package:school_management_application/utils/data.dart';
 
 class TaskScreen extends StatefulWidget {
@@ -12,6 +16,8 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen> {
   List<PersonalTaskModel> personalTaskList = [];
+  List<PersonalTaskModel> groupTaskList = [];
+  List<ToDo> noteList = [];
   bool isLoading = true;
   @override
   void initState() {
@@ -19,6 +25,9 @@ class _TaskScreenState extends State<TaskScreen> {
 
     Future.delayed(const Duration(milliseconds: 800), () {
       personalTaskList = personalTaskModelFromJson(DemoData.personalTaskJson);
+      groupTaskList = personalTaskModelFromJson(DemoData.groupTaskJson);
+      noteList = Boxes.getNotes().values.toList();
+      // noteList = toDoFromJson(DemoData.toDoJson);
       isLoading = false;
 
       if (mounted) setState(() {});
@@ -31,49 +40,7 @@ class _TaskScreenState extends State<TaskScreen> {
         length: 2,
         child: SafeArea(
           child: Scaffold(
-            appBar: AppBar(
-              flexibleSpace: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      // Color.fromRGBO(230, 215, 171, 0.8),
-                      Color.fromARGB(255, 158, 94, 218),
-                      Color.fromRGBO(154, 156, 238, 0.8),
-                      Color.fromRGBO(154, 156, 238, 0.8),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25),
-                  ),
-                  // Adds more space at the bottom
-                ),
-                padding: const EdgeInsets.only(bottom: 24),
-              ),
-              title: const Text(
-                'Tasks Assignment',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              automaticallyImplyLeading: false,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              // actions: [
-              //   // IconButton(
-              //   //   icon: const Icon(Icons.arrow_back),
-              //   //   onPressed: () {
-              //   //     // Handle notification button press
-              //   //   },
-              //   // ),
-              // ],
-              centerTitle: true,
-            ),
+            appBar: appbar('Tasks Assignment', () => Navigator.of(context).pop()),
             body: isLoading
                 ? const Center(
                     child: CircularProgressIndicator(
@@ -83,8 +50,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 : Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 24.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: const Color(0xFFF3F3F3),
@@ -115,13 +81,12 @@ class _TaskScreenState extends State<TaskScreen> {
                                 ),
                               ),
                               Tab(
-                                child: Text('Goal'),
+                                child: Text('Group'),
                               ),
                             ],
                             indicatorSize: TabBarIndicatorSize.tab,
                             indicatorPadding: EdgeInsets.zero,
-                            labelStyle:
-                                const TextStyle(fontWeight: FontWeight.bold),
+                            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -131,8 +96,8 @@ class _TaskScreenState extends State<TaskScreen> {
                           children: [
                             // Personal Tab Content
                             personalTab(),
-                            // Goal Tab Content
-                            const Center(child: Text('Goal Tasks')),
+                            // Group Tab Content
+                            groupTab()
                           ],
                         ),
                       ),
@@ -166,31 +131,68 @@ class _TaskScreenState extends State<TaskScreen> {
           const SizedBox(
             height: 10,
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.width * 0.46,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: MediaQuery.of(context).size.width * 0.46,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurpleAccent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+          noteList.isEmpty
+              ? const Text(
+                  "Empty Notes",
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
                   ),
-                  child: Center(
-                    child: Text(
-                      'Item ${index + 1}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                )
+              : SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.46,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: noteList.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 0.46,
+                        // margin: const EdgeInsets.symmetric(horizontal: 0),
+                        // padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.deepPurpleAccent.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Stack(
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                    onPressed: () {
+                                      noteList.removeAt(index);
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.delete, color: Colors.red, size: 20))),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    noteList[index].title,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    noteList[index].content,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
+                ),
         ],
       ),
     );
@@ -227,25 +229,23 @@ class _TaskScreenState extends State<TaskScreen> {
                   // padding:
                   //     const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 221, 219, 106)
-                        .withOpacity(0.2),
+                    color: const Color.fromARGB(255, 221, 219, 106).withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
                     dense: true,
                     title: Text(
                       personalTaskList[index].title,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w500),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           personalTaskList[index].subTitle,
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 8,
                         ),
                         Row(
@@ -255,13 +255,12 @@ class _TaskScreenState extends State<TaskScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   "Created by:",
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                                 Text(personalTaskList[index].createdBy),
-                                Text(
-                                    "Dept: ${personalTaskList[index].subject}"),
+                                Text("Dept: ${personalTaskList[index].subject}"),
                               ],
                             ),
                             const SizedBox(width: 16),
@@ -295,10 +294,120 @@ class _TaskScreenState extends State<TaskScreen> {
                                   "Due Date:",
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
-                                Text(DateTime.now()
-                                    .add(const Duration(days: 5))
-                                    .toString()
-                                    .split(" ")[0]),
+                                Text(DateTime.now().add(const Duration(days: 5)).toString().split(" ")[0]),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column groupTab() {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        const Padding(
+          padding: EdgeInsets.only(left: 11.0),
+          child: ContentHeader(
+            title: "Group Tasks",
+            image: "task",
+            height: 26,
+            width: 26,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Expanded(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: groupTaskList.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  // padding:
+                  //     const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 221, 219, 106).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    dense: true,
+                    title: Text(
+                      groupTaskList[index].title,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          groupTaskList[index].subTitle,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Created by:",
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                                Text(groupTaskList[index].createdBy),
+                                Text("Dept: ${groupTaskList[index].subject}"),
+                              ],
+                            ),
+                            const SizedBox(width: 16),
+                            Container(
+                              height: 48,
+                              width: 1,
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            const SizedBox(width: 16),
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Type:",
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                                Text("Group"),
+                              ],
+                            ),
+                            const SizedBox(width: 16),
+                            Container(
+                              height: 48,
+                              width: 1,
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Due Date:",
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                                Text(DateTime.now().add(const Duration(days: 5)).toString().split(" ")[0]),
                               ],
                             ),
                           ],
@@ -316,6 +425,8 @@ class _TaskScreenState extends State<TaskScreen> {
   }
 
   void showTask(BuildContext context) {
+    TextEditingController titleController = TextEditingController();
+    TextEditingController contentController = TextEditingController();
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -323,24 +434,96 @@ class _TaskScreenState extends State<TaskScreen> {
           top: Radius.circular(15.0),
         ),
       ),
-      isScrollControlled: true,
+      // isScrollControlled: true,
       isDismissible: false,
       builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-            expand: false,
-            snap: true,
-            builder: (_, controller) {
-              return StatefulBuilder(builder: (context, setState2) {
-                return SingleChildScrollView(
-                  controller: controller,
-                  child: Container(
-                    child: const Column(
-                      children: [Text("Title")],
+        return StatefulBuilder(builder: (context, setState2) {
+          return Container(
+            // height: MediaQuery.of(context).size.height * 0.7,
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Create Note",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      hintText: "Enter Title",
+                      hintStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
                     ),
                   ),
-                );
-              });
-            });
+                ),
+                TextFormField(
+                  controller: contentController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 7,
+                  textInputAction: TextInputAction.newline,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                  decoration: const InputDecoration(
+                    hintText: "Write Your Note",
+                    hintStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (titleController.text.isNotEmpty && contentController.text.isNotEmpty) {
+                        noteList.add(
+                          ToDo(
+                            title: titleController.text,
+                            content: contentController.text,
+                            id: 0,
+                            imgPath: '',
+                            status: '',
+                            remarks: '',
+                            createdAt: '',
+                            updatedAt: '',
+                          ),
+                        );
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please fill all fields"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                      setState(() {});
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurpleAccent,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text(
+                      "Done",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
       },
     );
   }
@@ -384,8 +567,7 @@ class ContentHeader extends StatelessWidget {
           const SizedBox(width: 15),
           Text(
             title!,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
           ),
         ],
       ),

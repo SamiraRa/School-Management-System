@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_management_application/constants.dart';
 
 class LeaveApplyScreen extends StatefulWidget {
   const LeaveApplyScreen({Key? key}) : super(key: key);
@@ -11,9 +12,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leave Apply'),
-      ),
+      appBar: appbar('Leave Apply', () => Navigator.of(context).pop()),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -41,9 +40,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                       border: OutlineInputBorder(),
                     ),
                     readOnly: true,
-                    onTap: () {
-                      // Implement date picker
-                    },
+                    onTap: () {},
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -66,7 +63,10 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Implement leave apply logic
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Leave application submitted!')),
+                  );
                 },
                 child: const Text('Apply'),
               ),

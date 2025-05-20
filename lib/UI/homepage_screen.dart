@@ -4,7 +4,11 @@ import 'package:school_management_application/UI/class_schedule_screen.dart';
 import 'package:school_management_application/UI/exams_screen.dart';
 import 'package:school_management_application/UI/fees_screen.dart';
 import 'package:school_management_application/UI/leave_apply.dart';
+import 'package:school_management_application/UI/library_screen.dart';
+import 'package:school_management_application/UI/profile_screen.dart';
 import 'package:school_management_application/UI/tasks_assignment.dart';
+import 'package:school_management_application/UI/transport_screen.dart';
+import 'package:school_management_application/constants.dart';
 
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
@@ -15,33 +19,21 @@ class HomepageScreen extends StatefulWidget {
 
 class _HomepageScreenState extends State<HomepageScreen> {
   List buttonList = [
-    {
-      "name": "Attendance",
-      "icon": "Calendar",
-      "screen": const AttendanceScreen()
-    },
-    {
-      "name": "Daily Classes",
-      "icon": "timetable",
-      "screen": const ClassesScheduleScreen()
-    },
-    {"name": "Tasks", "icon": "book-stack", "screen": const TaskScreen()},
+    {"name": "Attendance", "icon": "Calendar", "screen": const AttendanceScreen()},
+    {"name": "Daily Classes", "icon": "timetable", "screen": const ClassesScheduleScreen()},
+    {"name": "Tasks", "icon": "task", "screen": const TaskScreen()},
     {"name": "Exams", "icon": "exam-time", "screen": const ExamsScreen()},
     {"name": "Fees", "icon": "fee", "screen": const FeesPaymentScreen()},
-    {
-      "name": "Leave Apply",
-      "icon": "book-stack",
-      "screen": const LeaveApplyScreen()
-    },
-    {"name": "Transport", "icon": "vehicles"},
-    {"name": "Library", "icon": "books-stack-of-three"},
+    {"name": "Leave Apply", "icon": "book-stack", "screen": const LeaveApplyScreen()},
+    {"name": "Transport", "icon": "vehicles", "screen": const TransportScreen()},
+    {"name": "Library", "icon": "books-stack-of-three", "screen": const LibraryScreen()},
   ];
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // appBar:
+        appBar: appbar("Home", () {}),
 
         //  AppBar(
         //   automaticallyImplyLeading: false,
@@ -67,19 +59,22 @@ class _HomepageScreenState extends State<HomepageScreen> {
             ),
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 247, 221, 136),
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(
-                            color: const Color.fromARGB(255, 104, 184, 250))),
-                    child: Image.asset(
-                      'assets/images/man.png',
-                      height: 60,
-                      width: 60,
+                InkWell(
+                  onTap: () =>
+                      {Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()))},
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 247, 221, 136),
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(color: const Color.fromARGB(255, 104, 184, 250))),
+                      child: Image.asset(
+                        'assets/images/man.png',
+                        height: 60,
+                        width: 60,
+                      ),
                     ),
                   ),
                 ),
@@ -93,15 +88,13 @@ class _HomepageScreenState extends State<HomepageScreen> {
                       children: [
                         Text(
                           "Md. Abdullah",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w500),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
                     Text(
                       "Dept of CSE,\nDhaka City College",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                     ),
                     // Text(
                     //   "Md. Abdullah",
@@ -128,27 +121,24 @@ class _HomepageScreenState extends State<HomepageScreen> {
                   return Column(
                     children: [
                       Container(
-                        height: 90,
-                        width: 90,
+                        height: 100,
+                        width: 100,
                         decoration: decorationOfContainer(),
                         child: InkWell(
                           onTap: () => {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        buttonList[index]["screen"]))
+                                context, MaterialPageRoute(builder: (context) => buttonList[index]["screen"]))
                           },
                           child: Stack(
                             children: [
                               Positioned(
-                                top: 15,
-                                left: 20,
+                                top: 18,
+                                left: 25,
                                 child: Container(
                                   height: 45,
                                   width: 45,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
+                                    color: const Color.fromARGB(255, 222, 186, 186),
                                     borderRadius: BorderRadius.circular(100),
                                   ),
                                 ),
@@ -164,8 +154,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                     SizedBox(
                                       height: 28,
                                       width: 29,
-                                      child: Image.asset(
-                                          'assets/images/${buttonList[index]["icon"]}.png'),
+                                      child: Image.asset('assets/images/${buttonList[index]["icon"]}.png'),
                                     ),
                                     const SizedBox(
                                       height: 8,
@@ -175,8 +164,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                       style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: Color.fromARGB(
-                                              255, 114, 112, 112)),
+                                          color: Color.fromARGB(255, 114, 112, 112)),
                                     )
                                   ],
                                 ),
@@ -218,13 +206,14 @@ class _HomepageScreenState extends State<HomepageScreen> {
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Container(
                 height: 120,
+                padding: const EdgeInsets.all(10),
                 // width: double.infinity,
                 decoration: decorationOfContainer(),
                 child: const Row(
                   children: [
-                    Icon(
-                      Icons.image,
-                      size: 80,
+                    Text(
+                      "Currently No Notice Is Available...",
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
                     ),
                     // Icon(
                     //   Icons.document_scanner,
@@ -255,7 +244,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
             spreadRadius: 2,
             blurStyle: BlurStyle.normal)
       ],
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(15),
       border: Border.all(width: 1, color: Colors.deepPurple.withOpacity(0.5)),
 
       color: Colors.white,
